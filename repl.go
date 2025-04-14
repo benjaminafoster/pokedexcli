@@ -27,12 +27,16 @@ func startRepl(cfg *config) {
 
 		// get the first word from the cleaned input which is the command
 		commandName := cleanInputText[0]
+		args := []string{}
+		if len(cleanInputText) > 1 {
+			args = cleanInputText[1:]
+		}
 
 		commandRegistry := getCommands()
 
 		command, exists := commandRegistry[commandName]
 		if exists {
-			err := command.callback(cfg)
+			err := command.callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -55,7 +59,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name                string
 	description         string
-	callback            func(*config) error
+	callback            func(*config, ...string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -69,6 +73,11 @@ func getCommands() map[string]cliCommand {
 			name:           "mapb",
 			description:    "Displays the previous set of 20 Pokedex location areas",
 			callback:       commandMapB,
+		},
+		"explore": {
+			name:           "explore",
+			description:    "Lists all Pokemon encountered in the target location",
+			callback:       commandExplore,
 		},
 		"help": {
 			name:           "help",
