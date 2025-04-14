@@ -2,105 +2,43 @@ package main
 
 import (
 	"fmt"
-	"encoding/json"
-	"net/http"
-	"io"
+	"errors"
 )
 
-type Response struct {
-	Next           string                      `json:"next"`
-	Previous       string                      `json:"previous"`
-	Results        []map[string]string         `json:"results"`
-}
-
-func commandMap(c *Config) error {
-	baseUrl := "https://pokeapi.co/api/v2/location-area"
-	
-	var choiceUrl string
-
-	if c.Next != "" {
-		choiceUrl = c.Next
-	} else {
-		choiceUrl = baseUrl
-	}
-
-	// submit an HTTP GET request and capture its response
-	res, err := http.Get(choiceUrl)
+func commandMap(cfg *config) error {
+	locationsResp, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsURL)
 	if err != nil {
-		return fmt.Errorf("error submitting HTTP GET request: %w", err)
-	}
-
-	body, err := io.ReadAll(res.Body)
-
-	defer res.Body.Close()
-	
-	if res.StatusCode > 299 {
-		return fmt.Errorf("response failed with status code: %d and\nbody: %s", res.StatusCode, body)
-	}
-	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 	
-	// unmarshal the response into a Response struct
-	responseStruct := Response{}
-	if err := json.Unmarshal(body, &responseStruct); err != nil {
-		return fmt.Errorf("error unmarshaling json data: %w", err)
-	}
+	cfg.nextLocationsURL = locationsResp.Next
+	cfg.prevLocationsURL = locationsResp.Previous
+	
 
-	// print the names of the location areas provided in the API response
-	for _,result := range responseStruct.Results {
-		fmt.Printf("%s\n", result["name"])
+	for _, loc := range locationsResp.Results {
+		fmt.Println(loc.Name)
 	}
-
-	// update config struct
-	c.Next = responseStruct.Next
-	c.Previous = responseStruct.Previous
 
 	return nil
 }
 
-func commandMapB(c *Config) error {
+func commandMapB(cfg *config) error {
 	
-	var choiceUrl string
-
-	if c.Previous == "" {
-		fmt.Println("you're on the first page")
-		return nil
-	} else {
-		choiceUrl = c.Previous
+	if cfg.prevLocationsURL == nil {
+		return errors.New("you're on the first page")
 	}
 
-	// submit an HTTP GET request and capture its response
-	res, err := http.Get(choiceUrl)
+	locationsResp, err := cfg.pokeapiClient.ListLocations(cfg.prevLocationsURL)
 	if err != nil {
-		return fmt.Errorf("error submitting HTTP GET request: %w", err)
+		return err
 	}
 
-	body, err := io.ReadAll(res.Body)
+	cfg.nextLocationsURL = locationsResp.Next
+	cfg.prevLocationsURL = locationsResp.Previous
 
-	defer res.Body.Close()
-	
-	if res.StatusCode > 299 {
-		return fmt.Errorf("response failed with status code: %d and\nbody: %s", res.StatusCode, body)
+	for _, loc := range locationsResp.Results {
+		fmt.Println(loc.Name)
 	}
-	if err != nil {
-		fmt.Println(err)
-	}
-	
-	// unmarshal the response into a Response struct
-	responseStruct := Response{}
-	if err := json.Unmarshal(body, &responseStruct); err != nil {
-		return fmt.Errorf("error unmarshaling json data: %w", err)
-	}
-
-	// print the names of the location areas provided in the API response
-	for _,result := range responseStruct.Results {
-		fmt.Printf("%s\n", result["name"])
-	}
-
-	// update config struct
-	c.Next = responseStruct.Next
-	c.Previous = responseStruct.Previous
 
 	return nil
 }
