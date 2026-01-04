@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"strings"
+	"bufio"
+	"os"
 )
 
 func cleanInput(text string) []string {
@@ -17,5 +19,16 @@ func cleanInput(text string) []string {
 }
 
 func startREPL() {
-	fmt.Println("Here she goes")
+	scanner := bufio.NewScanner(os.Stdin)
+	for {
+		fmt.Print("Pokedex > ")
+		scanner.Scan()
+		input := scanner.Text()
+		cleanedInput := cleanInput(input)
+		if len(cleanedInput) == 0 {
+			continue
+		}
+		cmd := cleanedInput[0]
+		fmt.Println("Your command was:", cmd)
+	}
 }
