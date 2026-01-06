@@ -7,5 +7,6 @@ import (
 )
 
 func commandMap() error {
-
+	locationDataUrl := "https://pokeapi.co/api/v2/location-area"
+	locationData, err := pokepai.FetchLocationAreaData(locationDataUrl)
 }
