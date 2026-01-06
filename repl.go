@@ -29,9 +29,11 @@ func startREPL() {
 			continue
 		}
 		cleanCommand := cleanedInput[0]
+		cmds := getCommands()
 		cmd, ok := cmds[cleanCommand]
 		if !ok {
 			fmt.Println("Unknown command")
+			continue
 		}
 
 		cmd.callback()
