@@ -28,7 +28,13 @@ func startREPL() {
 		if len(cleanedInput) == 0 {
 			continue
 		}
-		cmd := cleanedInput[0]
-		fmt.Println("Your command was:", cmd)
+		cleanCommand := cleanedInput[0]
+		cmd, ok := cmds[cleanCommand]
+		if !ok {
+			fmt.Println("Unknown command")
+		}
+
+		cmd.callback()
+
 	}
 }
