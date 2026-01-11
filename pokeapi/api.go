@@ -68,7 +68,7 @@ type LocationAreaResponse struct {
 }
 
 
-func (c *Client) FetchLocationAreaData(pageUrl *string) (LocationAreaResponse, error) {
+func (c *Client) ListLocations(pageUrl *string) (LocationAreaResponse, error) {
 	url := baseUrl + "/location-area"
 	if pageUrl != nil {
 		url = *pageUrl

@@ -5,12 +5,15 @@ import (
 )
 
 func commandMap(cfg *Config) error {
-	locationResp, err := cfg.pokeapiClient.FetchLocationAreaData(cfg.nextLocationUrl)
+	locationResp, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationUrl)
 	if err != nil {
 		fmt.Println("Error occurred: ", err)
 	}
 
-	for _, location := range locationAreaData.Results {
+	cfg.nextLocationUrl = locationResp.Next
+	cfg.prevLocationUrl = locationResp.Previous
+
+	for _, location := range locationResp.Results {
 		fmt.Println(location.Name)
 	}
 
