@@ -9,9 +9,9 @@ type cliCommand struct {
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
 		"exit": {
-		name: "exit",
-		description: "Exit the Pokedex",
-		callback: commandExit,
+			name: "exit",
+			description: "Exit the Pokedex",
+			callback: commandExit,
 		},
 		"help": {
 			name: "help",
