@@ -18,7 +18,7 @@ func cleanInput(text string) []string {
 	return cleanedWords
 }
 
-func startREPL() {
+func startREPL(c Config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -36,7 +36,7 @@ func startREPL() {
 			continue
 		}
 
-		cmd.callback()
+		cmd.callback(c)
 
 	}
 }

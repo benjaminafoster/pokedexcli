@@ -2,11 +2,21 @@ package main
 
 import (
 	"fmt"
-	"errors"
 	"github.com/benjaminafoster/pokedexcli/pokeapi"
 )
 
-func commandMap() error {
-	locationDataUrl := "https://pokeapi.co/api/v2/location-area"
-	locationData, err := pokepai.FetchLocationAreaData(locationDataUrl)
+func commandMap(c Config) error {
+	if c.nextLocationUrl == nil {
+		
+	}
+	locationAreaData, err := pokepai.FetchLocationAreaData(locationAreaUrl)
+	if err != nil {
+		fmt.Println("Error occurred: ", err)
+	}
+
+	for _, location := range locationAreaData.Results {
+		fmt.Println(location.Name)
+	}
+
+	return nil
 }
