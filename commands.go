@@ -3,7 +3,7 @@ package main
 type cliCommand struct {
 	name string
 	description string
-	callback func(Config) error
+	callback func(*Config) error
 }
 
 func getCommands() map[string]cliCommand {

@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+const (
+	baseUrl = "https://pokeapi.co/api/v2"
+)
+
 type Client struct {
 	httpClient http.Client
 }

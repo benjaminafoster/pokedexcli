@@ -9,7 +9,7 @@ import (
 )
 
 
-func fetchApiData(url string) []byte {
+func (c *Client) fetchApiData(url string) []byte {
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -68,11 +68,31 @@ type LocationAreaResponse struct {
 }
 
 
-func FetchLocationAreaData(url string) (LocationAreaResponse, error) {
-	data := fetchApiData(url)
+func (c *Client) FetchLocationAreaData(pageUrl *string) (LocationAreaResponse, error) {
+	url := baseUrl + "/location-area"
+	if pageUrl != nil {
+		url = *pageUrl
+	}
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return LocationAreaResponse{}, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return LocationAreaResponse{}, err
+	}
+
+	defer resp.Body.Close()
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return LocationAreaResponse{}, err
+	}
 
 	locationResponse := LocationAreaResponse{}
-	err := json.Unmarshal(data, &locationResponse)
+	err = json.Unmarshal(data, &locationResponse)
 	if err != nil {
 		return LocationAreaResponse{}, err
 	}
