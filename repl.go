@@ -36,7 +36,11 @@ func startREPL(c *Config) {
 			continue
 		}
 
-		cmd.callback(c)
+		err := cmd.callback(c)
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
 
 	}
 }
