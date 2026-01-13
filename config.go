@@ -1,9 +1,9 @@
 package main
 
-import pokeapi "github.com/benjaminafoster/pokedexcli/pokeapi"
+import pokeapi "github.com/benjaminafoster/pokedexcli/internal/pokeapi"
 
 type Config struct {
-	pokeapiClient pokeapi.Client
+	pokeapiClient   pokeapi.Client
 	nextLocationUrl *string
 	prevLocationUrl *string
 }
