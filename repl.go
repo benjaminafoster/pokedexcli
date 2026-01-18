@@ -29,6 +29,7 @@ func startREPL(c *Config) {
 			continue
 		}
 		cleanCommand := cleanedInput[0]
+		commandArgs := cleanedInput[1:]
 		cmds := getCommands()
 		cmd, ok := cmds[cleanCommand]
 		if !ok {
@@ -36,7 +37,7 @@ func startREPL(c *Config) {
 			continue
 		}
 
-		err := cmd.callback(c)
+		err := cmd.callback(c, commandArgs...)
 		if err != nil {
 			fmt.Println(err)
 			continue

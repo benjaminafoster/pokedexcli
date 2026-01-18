@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-func commandMapf(cfg *Config) error {
+func commandMapf(cfg *Config, args ...string) error {
 	locationResp, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationUrl)
 	if err != nil {
 		return err
@@ -21,7 +21,7 @@ func commandMapf(cfg *Config) error {
 	return nil
 }
 
-func commandMapb(cfg *Config) error {
+func commandMapb(cfg *Config, args ...string) error {
 	if cfg.prevLocationUrl == nil {
 		return errors.New("you're on the first page")
 	}
