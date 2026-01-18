@@ -1,51 +1,10 @@
 package pokeapi
 
-
 import (
-	"net/http"
-	"io"
 	"encoding/json"
+	"io"
+	"net/http"
 )
-
-
-type LocationResponse struct {
-	Areas []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"areas"`
-	GameIndices []struct {
-		GameIndex  int `json:"game_index"`
-		Generation struct {
-			Name string `json:"name"`
-			URL  string `json:"url"`
-		} `json:"generation"`
-	} `json:"game_indices"`
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Names []struct {
-		Language struct {
-			Name string `json:"name"`
-			URL  string `json:"url"`
-		} `json:"language"`
-		Name string `json:"name"`
-	} `json:"names"`
-	Region struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"region"`
-}
-
-
-type LocationAreaResponse struct {
-	Count    int    `json:"count"`
-	Next     *string `json:"next"`
-	Previous *string    `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
-
 
 func (c *Client) ListLocations(pageUrl *string) (LocationAreaResponse, error) {
 	url := baseUrl + "/location-area"
@@ -89,4 +48,32 @@ func (c *Client) ListLocations(pageUrl *string) (LocationAreaResponse, error) {
 
 	return locationResponse, nil
 
+}
+
+func (c *Client) GetLocation(location string) (LocationResponse, error) {
+	url := baseUrl + "/location-area/" + location
+	
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return LocationResponse{}, err
+	}
+	
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return LocationResponse{}, err
+	}
+	defer resp.Body.Close()
+	
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return LocationResponse{}, err
+	}
+	
+	locationInfo := LocationResponse{}
+	err = json.Unmarshal(data, &locationInfo)
+	if err != nil {
+		return LocationResponse{}, err
+	}
+	
+	return locationInfo, nil
 }
